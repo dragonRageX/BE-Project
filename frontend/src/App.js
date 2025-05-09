@@ -7,12 +7,61 @@ import DailyReturns from './components/DailyReturns';
 import Header from './components/Header'
 import Portfolio from './components/Portfolio';
 import TodaysMarkets from './components/TodaysMarkets/TodaysMarkets';
+import SignalsAndRecommendations from './components/SignalsAndRecommendations';
 import API from './api'
 import { theme } from './global/theme';
 import { StyledEngineProvider, ThemeProvider } from '@mui/material/styles';
 
 const App = () => {
-  const [portfolioData, setPortfolioData] = useState([
+  const [portfolioData, setPortfolioData] = useState([   //sample data
+    {
+      symbol: "AAPL",
+      description: "Apple Inc.",
+      allocation: 14.0,
+      amount: 16800.00,
+      predictedReturn: -40.6,
+      sentiment: "NEUTRAL",
+      holdDuration: 17,
+    },
+    {
+      symbol: "MSFT",
+      description: "Microsoft Corp",
+      allocation: 14.0,
+      amount: 16800.00,
+      predictedReturn: 2.2,
+      sentiment: "NEUTRAL",
+      holdDuration: 17,
+    },
+    {
+      symbol: "AMZN",
+      description: "Amazon.com Inc",
+      allocation: 14.0,
+      amount: 16800.00,
+      predictedReturn: 5.3,
+      sentiment: "NEUTRAL",
+      holdDuration: 17,
+    },
+    {
+      symbol: "GOOGL",
+      description: "Alphabet Inc Class C",
+      allocation: 14.0,
+      amount: 16800.00,
+      predictedReturn: 7.4,
+      sentiment: "NEUTRAL",
+      holdDuration: 17,
+    },
+    {
+      symbol: "TSLA",
+      description: "Tesla, Inc.",
+      allocation: 14.0,
+      amount: 16800.00,
+      predictedReturn: -18.2,
+      sentiment: "NEUTRAL",
+      holdDuration: 17,
+    }
+  ]);
+
+  const [dailyReturnsData, setDailyReturnsData] = useState([
     {
       symbol: "AAPL",
       description: "Apple Inc.",
@@ -52,10 +101,10 @@ const App = () => {
   ]);
 
   const [assetAllocationData, setAssetAllocationData] = useState([
-    { symbol: "Stocks", portfolioAllocation: 0.6 },   //sample data
-    { symbol: "Bonds", portfolioAllocation: 0.3 },
-    { symbol: "Cash", portfolioAllocation: 0.1 }
-]);
+    { symbol: "Stocks", portfolioAllocation: 60 },   //sample data
+    { symbol: "Bonds", portfolioAllocation: 30 },
+    { symbol: "Cash", portfolioAllocation: 10 }
+  ]);
 
   const [marketData, setMarketData] = useState([
     {
@@ -101,20 +150,26 @@ const App = () => {
   ]);
 
   const [portfolioValue, setPortfolioValue] = useState(0);
-  
+
   const [todaysChange, setTodaysChange] = useState(0);
 
-  // const getPortfolioData = async () => {
-  //   try {
-  //     const response = await API.get('/portfolio-data');
-  //     setPortfolioValue(response.data.portfolioValue);
-  //     setTodaysChange(response.data.todaysChange);
-  //     setPortfolioData(response.data.portfolioData);
-  //     setAssetAllocationData(response.data.portfolioAllocation);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const [signalsData, setSignalsData] = useState([ // Sample data for SignalsAndRecommendations
+      { asset: "AAPL", recommendation: "HOLD", reasoning: "Weak predicted return (-40.6%), High growth potential (27.0%)" },
+      { asset: "MSFT", recommendation: "SELL", reasoning: "" },
+      { asset: "AMZN", recommendation: "HOLD", reasoning: "Strong predicted return (+5.3%), High growth potential (31.4%)" },
+      { asset: "GOOGL", recommendation: "HOLD", reasoning: "Strong predicted return (+7.4%), High growth potential (29.5%)" },
+      { asset: "TSLA", recommendation: "HOLD", reasoning: "Weak predicted return (-18.2%), High growth potential (62.5%)" }
+  ]);
+
+  const getPredictedData = async () => {
+    try {
+      const response = await API.get('/predict');
+      setPortfolioData(response.data.portfolioTable);
+      setAssetAllocationData(response.data.doughnut);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   // const getMarketData = async () => {
   //   const date = new Date();
@@ -136,8 +191,7 @@ const App = () => {
   // };
 
   // useEffect(() => {
-  //   getPortfolioData();
-  //   getMarketData();
+  //   getPredictedData();
   // }, []);
 
   return (
@@ -177,8 +231,9 @@ const App = () => {
                     <AssetAllocation
                       assetAllocationData={assetAllocationData}
                     />
-                    <DailyReturns dailyReturnsData={portfolioData} />
+                    <DailyReturns dailyReturnsData={dailyReturnsData} />
                     <Portfolio data={portfolioData} />
+                    <SignalsAndRecommendations data={signalsData} /> {/* Add the new component here */}
                   </Grid>
                 </Container>
               </Box>

@@ -13,7 +13,7 @@ import chroma from "chroma-js";
 const AssetAllocation = ({ assetAllocationData }) => {
   const chartLabels = assetAllocationData.map(data => data.symbol);
   const dataSet = assetAllocationData.map(
-    (data) => parseFloat(data.portfolioAllocation) * 100
+    (data) => parseFloat(data.portfolioAllocation)
   );
   const colors = chroma
     .scale(["#313bf0", "#96ffea", "#008080"])

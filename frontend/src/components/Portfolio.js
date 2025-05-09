@@ -34,24 +34,17 @@ const TableBodyCell = styled(TableCell)`
 `;
 
 const Portfolio = ({ data }) => {
-  const headings = ['Price', 'Today\'s Price Change', 'Today\'s % Change', 'Today\'s Gain/Loss', 'Shares'];
+  const headings = ['Allocation %', 'Amount ($)', 'Pred. Return', 'Sentiment', 'Hold (mo)'];
 
   const renderPriceWithCommas = (price) => {
     return '$' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
-  const renderPriceChange = (number) => {
-    if (number < 0) {
-      return <span style={{ color: '#e01616' }}>-${Math.abs(number).toFixed(2)}</span>;
-    }
-    return <span style={{ color: '#0d6f3f' }}>${number.toFixed(2)}</span>;
-  };
-
   const renderPercentage = (number) => {
     if (number < 0) {
-      return <span style={{ color: '#e01616' }}>{number}%</span>;
+      return <span style={{ color: '#e01616' }}>{number.toFixed(1)}%</span>;
     }
-    return <span style={{ color: '#0d6f3f' }}>{number}%</span>;
+    return <span style={{ color: '#0d6f3f' }}>{number.toFixed(1)}%</span>;
   }
 
   return (
@@ -84,7 +77,7 @@ const Portfolio = ({ data }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableHeaderCell>Symbol</TableHeaderCell>
+                  <TableHeaderCell>Asset</TableHeaderCell>
                   {headings.map((heading, i) => (
                     <TableHeaderCell key={i} sx={{ textAlign: "right" }}>
                       {heading}
@@ -107,19 +100,11 @@ const Portfolio = ({ data }) => {
                       <Box sx={{ fontWeight: 700 }}>{record.symbol}</Box>
                       <Box sx={{ color: "#4c4c4c" }}>{record.description}</Box>
                     </TableBodyCellSymbol>
-                    <TableBodyCell>
-                      {renderPriceWithCommas(record.price)}
-                    </TableBodyCell>
-                    <TableBodyCell>
-                      {renderPriceChange(record.priceChange)}
-                    </TableBodyCell>
-                    <TableBodyCell>
-                      {renderPercentage(record.percentChange)}
-                    </TableBodyCell>
-                    <TableBodyCell>
-                      {renderPriceChange(record.profitLossAmount)}
-                    </TableBodyCell>
-                    <TableBodyCell>{record.quantity}</TableBodyCell>
+                    <TableBodyCell>{record.allocation.toFixed(1)}%</TableBodyCell>
+                    <TableBodyCell>{renderPriceWithCommas(record.amount)}</TableBodyCell>
+                    <TableBodyCell>{renderPercentage(record.predictedReturn)}</TableBodyCell>
+                    <TableBodyCell>{record.sentiment}</TableBodyCell>
+                    <TableBodyCell>{record.holdDuration}</TableBodyCell>
                   </TableRow>
                 ))}
               </TableBody>

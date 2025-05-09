@@ -12,7 +12,9 @@ app.use(express.json());  // Built-in body parser for JSON
 
 // ➡️ Routes
 app.post('/api/predict', async (req, res) => {
-    const { risk_appetite, income, age } = req.body;
+    const risk_appetite = "medium";
+    const investmentAmount = 100000;
+    const horizon = 20;
 
     if (!risk_appetite || !income || !age) {
         return res.status(400).json({ error: 'Missing required fields: risk_appetite, income, age' });
@@ -22,8 +24,8 @@ app.post('/api/predict', async (req, res) => {
         // 🔗 Send data to Flask server
         const flaskResponse = await axios.post('http://localhost:5000/predict', {
             risk_appetite,
-            income,
-            age
+            investmentAmount,
+            horizon
         });
 
         const predictionResults = flaskResponse.data;
