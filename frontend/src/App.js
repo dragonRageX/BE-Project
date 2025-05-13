@@ -164,6 +164,7 @@ const App = () => {
   const getPredictedData = async () => {
     try {
       const response = await API.get('/predict');
+      console.log(response);
       setPortfolioData(response.data.portfolioTable);
       setAssetAllocationData(response.data.doughnut);
     } catch (error) {
@@ -190,9 +191,9 @@ const App = () => {
   //   }
   // };
 
-  // useEffect(() => {
-  //   getPredictedData();
-  // }, []);
+  useEffect(() => {
+    getPredictedData();
+  }, []);
 
   return (
     // StyledEngineProvider allows CSS-in-JS to be used
